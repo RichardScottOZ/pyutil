@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Implementation note: anything to conda-forge is very slow
+
 echo 'Tested on DLAMI alinux'
 echo 'Will update jupyter lab'
 
@@ -46,16 +48,22 @@ conda install -y nodejs
 conda install -y -c conda-forge ipdb
 conda update -y ipykernel notebook jupyter jupyter_client jupyter_console jupyter_core jupyterlab jupyterlab_launcher
 
+# Needed for jupyterlab-lsp
+pip install --pre jupyter-lsp
+pip install -U jsonschema
+pip install python-language-server[all]
+
 # Install extensions
 declare -a JUPYTER_EXT=(
     @jupyter-widgets/jupyterlab-manager @jupyterlab/toc
     @krassowski/jupyterlab_go_to_definition @bokeh/jupyter_bokeh
     @lckr/jupyterlab_variableinspector @mflevine/jupyterlab_html
-    @jupyterlab/plotly-extension
+    @jupyterlab/plotly-extension @krassowski/jupyterlab-lsp
 )
 for i in ${JUPYTER_EXT[@]}; do
     jupyter labextension install $i
 done
+
 # Show installed extensions
 jupyter labextension list
 
